@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Bets — Creative Problem Solving Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1612;
+    --ink-muted: #6b6560;
+    --ink-faint: #c4bfba;
+    --bg: #faf8f5;
+    --bg2: #f2ede7;
+    --bg3: #e8e0d6;
+    --accent: #d4521a;
+    --accent2: #2d5a8e;
+    --accent3: #2a7a4f;
+    --accent4: #8b3a9e;
+    --card: #fff;
+    --radius: 16px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── LANDING ── */
+  #landing {
+    background: var(--ink);
+    color: #faf8f5;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #landing::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,82,26,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  #landing::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,90,142,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .landing-badge {
+    display: inline-block;
+    background: rgba(212,82,26,0.2);
+    color: #e8845a;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    border: 1px solid rgba(212,82,26,0.3);
+    margin-bottom: 2rem;
+  }
+
+  .landing-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .landing-title span {
+    color: var(--accent);
+  }
+
+  .landing-sub {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: rgba(250,248,245,0.65);
+    max-width: 500px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 16px 40px;
+    border-radius: 100px;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(212,82,26,0.35);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .landing-traits {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 3.5rem;
+  }
+
+  .trait-pill {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    color: rgba(250,248,245,0.7);
+    font-weight: 300;
+  }
+
+  /* ── ASSESSMENT ── */
+  #assessment {
+    padding: 0;
+    background: var(--bg);
+  }
+
+  .assessment-header {
+    background: var(--ink);
+    color: #faf8f5;
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .assessment-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .progress-bar-outer {
+    width: 200px;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: rgba(250,248,245,0.55);
+    min-width: 50px;
+  }
+
+  .question-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+  }
+
+  .question-card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 3rem;
+    max-width: 680px;
+    width: 100%;
+    box-shadow: 0 2px 40px rgba(26,22,18,0.06);
+  }
+
+  .q-category {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+  }
+
+  .q-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .choices {
+    display: grid;
+    gap: 10px;
+  }
+
+  .choice {
+    background: var(--bg);
+    border: 1.5px solid var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 14px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--ink);
+    transition: all 0.15s;
+    text-align: left;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .choice:hover {
+    border-color: var(--accent);
+    background: rgba(212,82,26,0.04);
+  }
+
+  .choice.selected {
+    border-color: var(--accent);
+    background: rgba(212,82,26,0.06);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .choice-letter {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 6px;
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    transition: all 0.15s;
+  }
+
+  .choice.selected .choice-letter {
+    background: var(--accent);
+    color: white;
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2.5rem;
+  }
+
+  .btn-next {
+    background: var(--ink);
+    color: #faf8f5;
+    border: none;
+    padding: 13px 32px;
+    border-radius: 100px;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .btn-next.enabled {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .btn-next.enabled:hover {
+    transform: translateX(3px);
+  }
+
+  /* ── LOADING ── */
+  #loading {
+    background: var(--ink);
+    color: #faf8f5;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem;
+  }
+
+  .loading-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 2rem;
+    position: relative;
+  }
+
+  .loading-ring {
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .loading-sub {
+    color: rgba(250,248,245,0.5);
+    font-size: 0.95rem;
+    font-weight: 300;
+  }
+
+  .loading-steps {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 340px;
+    width: 100%;
+  }
+
+  .loading-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: rgba(250,248,245,0.35);
+    transition: color 0.4s;
+  }
+
+  .loading-step.active { color: rgba(250,248,245,0.85); }
+  .loading-step.done { color: var(--accent); }
+
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    min-width: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ── RESULTS ── */
+  #results {
+    background: var(--bg);
+  }
+
+  .results-hero {
+    background: var(--ink);
+    color: #faf8f5;
+    padding: 4rem 3rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .results-hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,82,26,0.18) 0%, transparent 65%);
+  }
+
+  .results-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(232,132,90,0.9);
+    margin-bottom: 1rem;
+  }
+
+  .results-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    max-width: 600px;
+    position: relative;
+  }
+
+  .results-intro {
+    font-size: 1rem;
+    font-weight: 300;
+    color: rgba(250,248,245,0.6);
+    max-width: 560px;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .scores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 2.5rem 3rem;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--bg3);
+  }
+
+  .score-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .score-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .score-bar {
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .score-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .score-level {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 6px;
+  }
+
+  /* color per trait */
+  .trait-creativity .score-value { color: var(--accent); }
+  .trait-creativity .score-fill { background: var(--accent); }
+  .trait-ambiguity .score-value { color: var(--accent2); }
+  .trait-ambiguity .score-fill { background: var(--accent2); }
+  .trait-risk .score-value { color: var(--accent3); }
+  .trait-risk .score-fill { background: var(--accent3); }
+  .trait-systems .score-value { color: var(--accent4); }
+  .trait-systems .score-fill { background: var(--accent4); }
+  .trait-observation .score-value { color: #c47a00; }
+  .trait-observation .score-fill { background: #c47a00; }
+
+  /* ── COURSE CONTENT ── */
+  .course-content {
+    padding: 3rem;
+    max-width: 800px;
+  }
+
+  .course-section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .course-section-sub {
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .module-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .module-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--bg3);
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+
+  .module-card:hover { box-shadow: 0 4px 20px rgba(26,22,18,0.08); }
+
+  .module-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .module-num {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  .module-meta { flex: 1; }
+
+  .module-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+  }
+
+  .module-desc {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .module-priority {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  .priority-high { background: rgba(212,82,26,0.1); color: var(--accent); }
+  .priority-med { background: rgba(45,90,142,0.1); color: var(--accent2); }
+  .priority-low { background: rgba(42,122,79,0.1); color: var(--accent3); }
+
+  .module-body {
+    display: none;
+    padding: 0 1.5rem 1.5rem;
+    border-top: 1px solid var(--bg2);
+  }
+
+  .module-body.open { display: block; }
+
+  .lesson-content {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--ink);
+    font-weight: 300;
+  }
+
+  .lesson-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.5rem;
+    color: var(--ink);
+  }
+
+  .lesson-content p { margin-bottom: 1rem; }
+
+  .lesson-content .highlight-box {
+    background: var(--bg2);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.25rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+
+  .lesson-content .exercise {
+    background: linear-gradient(135deg, rgba(212,82,26,0.05), rgba(45,90,142,0.05));
+    border: 1px solid var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .exercise-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .ai-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1.5rem 0;
+    color: var(--ink-muted);
+    font-size: 0.9rem;
+  }
+
+  .ai-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  .ai-dot:nth-child(2) { animation-delay: 0.2s; }
+  .ai-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .assessment-header { padding: 1.25rem 1.5rem; }
+    .question-card { padding: 1.75rem; }
+    .results-hero { padding: 2.5rem 1.5rem 3rem; }
+    .scores-grid { padding: 1.5rem; }
+    .course-content { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<section class="screen active" id="landing">
+  <div class="landing-badge">BUAD 457 · Creative Problem Solving</div>
+  <h1 class="landing-title">Little<br><span>Bets</span></h1>
+  <p class="landing-sub">A personalized course in creative problem solving — starting with an honest look at where you actually are.</p>
+  <button class="btn-primary" onclick="startAssessment()">Take the assessment →</button>
+  <div class="landing-traits">
+    <span class="trait-pill">Creativity</span>
+    <span class="trait-pill">Ambiguity Tolerance</span>
+    <span class="trait-pill">Risk Acceptance</span>
+    <span class="trait-pill">Systems Thinking</span>
+    <span class="trait-pill">Observation</span>
+  </div>
+</section>
+
+<!-- ══ ASSESSMENT ══ -->
+<section class="screen" id="assessment">
+  <div class="assessment-header">
+    <h2>CPS Profile Assessment</h2>
+    <div class="progress-wrap">
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="prog-bar" style="width:0%"></div>
+      </div>
+      <span class="progress-label" id="prog-label">0 / 20</span>
+    </div>
+  </div>
+  <div class="question-area">
+    <div class="question-card" id="q-card">
+      <div class="q-category" id="q-cat"></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="choices" id="q-choices"></div>
+      <div class="nav-row">
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Continue →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LOADING ══ -->
+<section class="screen" id="loading">
+  <div class="loading-icon"><div class="loading-ring"></div></div>
+  <div class="loading-title">Building your course</div>
+  <div class="loading-sub">Analyzing your responses...</div>
+  <div class="loading-steps" id="loading-steps">
+    <div class="loading-step" id="ls1"><div class="step-dot"></div>Scoring your CPS profile</div>
+    <div class="loading-step" id="ls2"><div class="step-dot"></div>Identifying growth areas</div>
+    <div class="loading-step" id="ls3"><div class="step-dot"></div>Generating personalized modules</div>
+    <div class="loading-step" id="ls4"><div class="step-dot"></div>Tailoring examples to your context</div>
+  </div>
+</section>
+
+<!-- ══ RESULTS ══ -->
+<section class="screen" id="results">
+  <div class="results-hero">
+    <div class="results-tag">Your CPS Profile</div>
+    <h2 class="results-title" id="results-title">Loading...</h2>
+    <p class="results-intro" id="results-intro"></p>
+  </div>
+
+  <div class="scores-grid" id="scores-grid"></div>
+
+  <div class="course-content">
+    <div class="course-section-title">Your personalized course</div>
+    <div class="course-section-sub" id="course-sub">Modules ordered by your biggest growth opportunities.</div>
+    <div class="module-list" id="module-list"></div>
+  </div>
+</section>
+
+<script>
+const QUESTIONS = [
+  {
+    cat: "Creativity",
+    trait: "creativity",
+    text: "You need to plan an event for 200 people on a $50 budget. What's your first instinct?",
+    choices: [
+      { text: "Start searching for what others have done in similar situations", score: 1 },
+      { text: "Feel stuck — I'd need more resources before I could really start", score: 0 },
+      { text: "Get excited and start throwing out wild ideas immediately", score: 3 },
+      { text: "Ask the attendees what they'd actually want, then figure out how to make it work", score: 2 }
+    ]
+  },
+  {
+    cat: "Ambiguity Tolerance",
+    trait: "ambiguity",
+    text: "Your professor announces the final project has no specific format, no rubric, and you can do 'whatever you want.' How do you feel?",
+    choices: [
+      { text: "Excited — complete freedom means I can do something truly original", score: 3 },
+      { text: "Anxious — I need structure to do my best work", score: 0 },
+      { text: "Cautiously optimistic — I'll ask some clarifying questions first", score: 2 },
+      { text: "Frustrated — how am I supposed to know if I'm doing it right?", score: 1 }
+    ]
+  },
+  {
+    cat: "Risk Acceptance",
+    trait: "risk",
+    text: "You have a great business idea, but it would require leaving your current internship six months early. You:",
+    choices: [
+      { text: "Stay in the internship — I'll work on the idea on the side and pursue it later", score: 1 },
+      { text: "Start small — test one piece of the idea while still in the internship before deciding", score: 3 },
+      { text: "Leave immediately — you can't do big things without big commitment", score: 2 },
+      { text: "Shelve the idea — it's probably not as good as it feels right now", score: 0 }
+    ]
+  },
+  {
+    cat: "Systems Thinking",
+    trait: "systems",
+    text: "A university is trying to improve student mental health. A peer suggests making therapy free for all students. Your reaction?",
+    choices: [
+      { text: "Great idea — direct solution to a direct problem", score: 0 },
+      { text: "It helps, but I'd also wonder what's causing the mental health crisis in the first place", score: 3 },
+      { text: "It might create demand that overwhelms the system", score: 2 },
+      { text: "I'd want to ask students what would actually help them most", score: 2 }
+    ]
+  },
+  {
+    cat: "Observation",
+    trait: "observation",
+    text: "You're designing a new campus coffee shop. You:",
+    choices: [
+      { text: "Research what successful coffee shops look like online", score: 1 },
+      { text: "Spend three mornings watching how students currently use existing spaces on campus", score: 3 },
+      { text: "Survey students about what they want in a coffee shop", score: 2 },
+      { text: "Bring in a professional designer who knows what works", score: 0 }
+    ]
+  },
+  {
+    cat: "Creativity",
+    trait: "creativity",
+    text: "You're brainstorming with a group and someone suggests a completely ridiculous idea. You:",
+    choices: [
+      { text: "Politely move past it and stay focused on realistic options", score: 0 },
+      { text: "Use it as a springboard — sometimes the worst idea unlocks the best one", score: 3 },
+      { text: "Laugh, but mentally note that it signals what NOT to do", score: 1 },
+      { text: "Ask them what problem they were trying to solve with it — there might be something there", score: 2 }
+    ]
+  },
+  {
+    cat: "Ambiguity Tolerance",
+    trait: "ambiguity",
+    text: "You're three weeks into a project and you realize the original problem definition was wrong. You:",
+    choices: [
+      { text: "Push through — changing course now would waste everything", score: 0 },
+      { text: "Feel frustrated, but pivot anyway", score: 2 },
+      { text: "Get energized — now you understand the real problem", score: 3 },
+      { text: "Check in with teammates first before making any changes", score: 1 }
+    ]
+  },
+  {
+    cat: "Risk Acceptance",
+    trait: "risk",
+    text: "Peter Sims argues that Chris Rock tests jokes in tiny clubs before his big specials. What does this tell you?",
+    choices: [
+      { text: "He lacks confidence in his material", score: 0 },
+      { text: "Small failures create the safety to discover what actually works", score: 3 },
+      { text: "He's trying to get honest feedback before going public", score: 2 },
+      { text: "It's just a habit — the testing probably doesn't change much", score: 1 }
+    ]
+  },
+  {
+    cat: "Systems Thinking",
+    trait: "systems",
+    text: "A city wants to reduce traffic congestion. They decide to add more highways. You predict:",
+    choices: [
+      { text: "It'll work — more lanes means more capacity", score: 0 },
+      { text: "It might help short-term but more roads tend to induce more driving", score: 3 },
+      { text: "It depends on where the new lanes go", score: 1 },
+      { text: "They should look at the whole transit system — roads are just one piece", score: 2 }
+    ]
+  },
+  {
+    cat: "Observation",
+    trait: "observation",
+    text: "Before designing a new app feature, you would most want to:",
+    choices: [
+      { text: "Analyze usage data to see what people are already clicking", score: 1 },
+      { text: "Watch real users try to accomplish the task the feature is meant to solve", score: 3 },
+      { text: "Ask power users what they wish the app could do", score: 2 },
+      { text: "Look at what competitors have built", score: 0 }
+    ]
+  },
+  {
+    cat: "Creativity",
+    trait: "creativity",
+    text: "You're stuck on a problem. What's your go-to move?",
+    choices: [
+      { text: "Think harder and longer about the problem itself", score: 1 },
+      { text: "Go do something completely unrelated and come back to it", score: 3 },
+      { text: "Find someone who's solved a similar problem and copy their approach", score: 0 },
+      { text: "Try to reframe the problem — ask if I'm solving the right thing", score: 2 }
+    ]
+  },
+  {
+    cat: "Ambiguity Tolerance",
+    trait: "ambiguity",
+    text: "Which of these feels most true for you right now?",
+    choices: [
+      { text: "I know what I want to do with my career and I'm on the right track", score: 1 },
+      { text: "I have several directions I'm interested in and I'm still figuring it out", score: 3 },
+      { text: "I'm anxious about not having a clear path yet", score: 0 },
+      { text: "I'm deliberately keeping my options open and testing different things", score: 2 }
+    ]
+  },
+  {
+    cat: "Risk Acceptance",
+    trait: "risk",
+    text: "Burnett & Evans in 'Designing Your Life' suggest making three radically different life plans. Your honest reaction?",
+    choices: [
+      { text: "This sounds overwhelming — I'd rather just commit to one path", score: 0 },
+      { text: "Interesting — having multiple plans probably reduces anxiety about any single one", score: 2 },
+      { text: "I'd actually enjoy this exercise — imagining different lives sounds fun", score: 3 },
+      { text: "Useful for some people, but I work better with focus", score: 1 }
+    ]
+  },
+  {
+    cat: "Systems Thinking",
+    trait: "systems",
+    text: "When something goes wrong in your life, your first instinct is to ask:",
+    choices: [
+      { text: "What specifically caused this?", score: 1 },
+      { text: "What feedback loop might I be part of that keeps producing this?", score: 3 },
+      { text: "How do I fix this as quickly as possible?", score: 0 },
+      { text: "Who else is affected by this, and how?", score: 2 }
+    ]
+  },
+  {
+    cat: "Observation",
+    trait: "observation",
+    text: "You're helping a friend who's struggling with motivation. You would first:",
+    choices: [
+      { text: "Share advice based on what worked for you", score: 1 },
+      { text: "Ask questions until you really understand their specific situation", score: 3 },
+      { text: "Send them a relevant article or book", score: 0 },
+      { text: "Just listen without jumping to solutions", score: 2 }
+    ]
+  },
+  {
+    cat: "Creativity",
+    trait: "creativity",
+    text: "Da Vinci kept notebooks full of questions about everything — water, birds, anatomy, mathematics. This habit suggests:",
+    choices: [
+      { text: "He was unfocused and couldn't commit to one thing", score: 0 },
+      { text: "Creativity comes from the cross-pollination of ideas across unrelated domains", score: 3 },
+      { text: "He was intellectually curious but much of it was probably wasted effort", score: 1 },
+      { text: "He understood that you never know which observation will matter later", score: 2 }
+    ]
+  },
+  {
+    cat: "Ambiguity Tolerance",
+    trait: "ambiguity",
+    text: "A mentor tells you: 'The right answer will become clear once you start.' How does this land?",
+    choices: [
+      { text: "Comforting — I actually believe this from experience", score: 3 },
+      { text: "Unsatisfying — I'd rather know before committing", score: 0 },
+      { text: "True, but easier said than done", score: 2 },
+      { text: "Depends on the stakes — low stakes yes, high stakes no", score: 1 }
+    ]
+  },
+  {
+    cat: "Risk Acceptance",
+    trait: "risk",
+    text: "The Wagsters sold their house and borrowed against their retirement to open a magic theater. Your instinct about this?",
+    choices: [
+      { text: "Reckless — you should never risk your financial security for a dream", score: 0 },
+      { text: "Admirable if you've done the homework — full commitment unlocks full effort", score: 3 },
+      { text: "I'd respect it, but I'd find a smarter way that didn't risk everything", score: 1 },
+      { text: "Context matters — it depends on their age, situation, and how much testing they'd already done", score: 2 }
+    ]
+  },
+  {
+    cat: "Systems Thinking",
+    trait: "systems",
+    text: "You change your morning routine and suddenly feel more productive at work. You conclude:",
+    choices: [
+      { text: "The new routine is probably responsible", score: 1 },
+      { text: "It could be a dozen things — routine, sleep, mood, season, placebo effect", score: 3 },
+      { text: "I should keep doing it and see if it holds over time", score: 2 },
+      { text: "I'll tell others about it — it worked for me", score: 0 }
+    ]
+  },
+  {
+    cat: "Observation",
+    trait: "observation",
+    text: "You're in a coffee shop. A stranger at the next table seems visibly upset. You:",
+    choices: [
+      { text: "Notice but mind my own business", score: 1 },
+      { text: "Find yourself curious — I'd quietly try to understand what's going on", score: 2 },
+      { text: "Tune it out — I'm focused on what I'm doing", score: 0 },
+      { text: "Be aware of it without staring — I absorb the environment around me naturally", score: 3 }
+    ]
+  }
+];
+
+const TRAIT_NAMES = {
+  creativity: "Creativity",
+  ambiguity: "Ambiguity Tolerance",
+  risk: "Risk Acceptance",
+  systems: "Systems Thinking",
+  observation: "Observation"
+};
+
+const TRAIT_COLORS = {
+  creativity: "var(--accent)",
+  ambiguity: "var(--accent2)",
+  risk: "var(--accent3)",
+  systems: "var(--accent4)",
+  observation: "#c47a00"
+};
+
+const TRAIT_BG_COLORS = {
+  creativity: "#fdf2ee",
+  ambiguity: "#eef2f8",
+  risk: "#eef6f1",
+  systems: "#f4eef8",
+  observation: "#fdf6e8"
+};
+
+let currentQ = 0;
+let answers = {};
+let selectedChoice = null;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startAssessment() {
+  showScreen('assessment');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-text').textContent = q.text;
+
+  const pct = Math.round((currentQ / QUESTIONS.length) * 100);
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = currentQ + ' / ' + QUESTIONS.length;
+
+  const choicesEl = document.getElementById('q-choices');
+  const letters = ['A','B','C','D'];
+  choicesEl.innerHTML = q.choices.map((c, i) => `
+    <button class="choice" onclick="selectChoice(${i})">
+      <span class="choice-letter">${letters[i]}</span>
+      ${c.text}
+    </button>
+  `).join('');
+
+  selectedChoice = null;
+  document.getElementById('btn-next').classList.remove('enabled');
+
+  // animate in
+  const card = document.getElementById('q-card');
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(16px)';
+  requestAnimationFrame(() => {
+    card.style.transition = 'opacity 0.3s, transform 0.3s';
+    card.style.opacity = '1';
+    card.style.transform = 'translateY(0)';
+  });
+}
+
+function selectChoice(idx) {
+  document.querySelectorAll('.choice').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  selectedChoice = idx;
+  document.getElementById('btn-next').classList.add('enabled');
+}
+
+function nextQuestion() {
+  if (selectedChoice === null) return;
+  const q = QUESTIONS[currentQ];
+  const trait = q.trait;
+  if (!answers[trait]) answers[trait] = [];
+  answers[trait].push(q.choices[selectedChoice].score);
+  currentQ++;
+
+  if (currentQ >= QUESTIONS.length) {
+    runLoading();
+  } else {
+    renderQuestion();
+  }
+}
+
+function computeScores() {
+  const scores = {};
+  for (const [trait, vals] of Object.entries(answers)) {
+    const sum = vals.reduce((a,b) => a+b, 0);
+    const max = vals.length * 3;
+    scores[trait] = Math.round((sum / max) * 100);
+  }
+  return scores;
+}
+
+function getLevel(score) {
+  if (score >= 75) return { label: "Strong", color: "var(--accent3)" };
+  if (score >= 50) return { label: "Developing", color: "var(--accent2)" };
+  return { label: "Growth Area", color: "var(--accent)" };
+}
+
+async function runLoading() {
+  showScreen('loading');
+  const steps = ['ls1','ls2','ls3','ls4'];
+  for (let i = 0; i < steps.length; i++) {
+    await delay(900);
+    document.getElementById(steps[i]).classList.add('active');
+    if (i > 0) document.getElementById(steps[i-1]).classList.add('done');
+  }
+  await delay(800);
+  document.getElementById(steps[steps.length-1]).classList.add('done');
+  await delay(500);
+  buildResults();
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function buildResults() {
+  const scores = computeScores();
+
+  // Sort traits by score ascending (worst first = biggest opportunity)
+  const sorted = Object.entries(scores).sort((a,b) => a[1] - b[1]);
+  const weakest = sorted.slice(0, 2).map(([t]) => t);
+
+  // Profile type
+  const avg = Math.round(Object.values(scores).reduce((a,b)=>a+b,0) / 5);
+  let profileTitle, profileDesc;
+
+  if (avg >= 75) {
+    profileTitle = "The Experimental Innovator";
+    profileDesc = "You're already operating in the swamp with confidence. You embrace ambiguity, take calculated risks, and think in systems. This course will sharpen your edges — especially around " + weakest.map(t => TRAIT_NAMES[t]).join(" and ") + ".";
+  } else if (avg >= 50) {
+    profileTitle = "The Curious Pragmatist";
+    profileDesc = "You have real creative instincts but tend to hedge them with practical caution. That balance is useful, but it can keep you on the high hard ground when the interesting problems are in the swamp. This course focuses on building your confidence in " + weakest.map(t => TRAIT_NAMES[t]).join(" and ") + ".";
+  } else {
+    profileTitle = "The High-Ground Specialist";
+    profileDesc = "Your training has optimized you for well-defined problems with knowable answers. That's a real skill — but it leaves you underprepared for the messy, ambiguous challenges that matter most. This course is built exactly for you.";
+  }
+
+  document.getElementById('results-title').textContent = profileTitle;
+  document.getElementById('results-intro').textContent = profileDesc;
+
+  // Scores grid
+  const grid = document.getElementById('scores-grid');
+  grid.innerHTML = sorted.map(([trait, score]) => {
+    const lv = getLevel(score);
+    return `
+      <div class="score-card trait-${trait}">
+        <div class="score-label">${TRAIT_NAMES[trait]}</div>
+        <div class="score-value">${score}<span style="font-size:1rem;opacity:0.5">%</span></div>
+        <div class="score-bar"><div class="score-fill" style="width:0%" data-target="${score}"></div></div>
+        <div class="score-level" style="color:${lv.color}">${lv.label}</div>
+      </div>`;
+  }).join('');
+
+  // Animate bars
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.score-fill').forEach(el => {
+      el.style.width = el.dataset.target + '%';
+    });
+  });
+
+  // Build modules
+  buildModules(scores, sorted, weakest);
+
+  showScreen('results');
+}
+
+function buildModules(scores, sorted, weakest) {
+  const allModules = getModuleDefinitions();
+
+  // Sort modules: weakest traits first, then medium, then strong
+  const orderedModules = [...allModules].sort((a, b) => {
+    const scoreA = scores[a.trait] || 50;
+    const scoreB = scores[b.trait] || 50;
+    return scoreA - scoreB;
+  });
+
+  const list = document.getElementById('module-list');
+  list.innerHTML = orderedModules.map((mod, idx) => {
+    const score = scores[mod.trait] || 50;
+    const priority = score < 50 ? 'high' : score < 75 ? 'med' : 'low';
+    const priorityLabel = score < 50 ? 'Priority' : score < 75 ? 'Develop' : 'Strengthen';
+    const color = TRAIT_COLORS[mod.trait];
+    const bgColor = TRAIT_BG_COLORS[mod.trait];
+
+    return `
+      <div class="module-card" onclick="toggleModule(${idx}, '${mod.trait}', this)">
+        <div class="module-header">
+          <div class="module-num" style="background:${bgColor}; color:${color}">0${idx+1}</div>
+          <div class="module-meta">
+            <div class="module-title">${mod.title}</div>
+            <div class="module-desc">${mod.subtitle}</div>
+          </div>
+          <span class="module-priority priority-${priority}">${priorityLabel}</span>
+        </div>
+        <div class="module-body" id="mod-body-${idx}">
+          <div class="ai-loading" id="ai-load-${idx}">
+            <div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div>
+            <span>Generating your personalized lesson...</span>
+          </div>
+          <div class="lesson-content" id="lesson-${idx}"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+const moduleDataCache = {};
+
+async function toggleModule(idx, trait, cardEl) {
+  const body = document.getElementById(`mod-body-${idx}`);
+  const isOpen = body.classList.contains('open');
+
+  if (isOpen) {
+    body.classList.remove('open');
+    return;
+  }
+
+  body.classList.add('open');
+
+  if (moduleDataCache[idx]) return; // already loaded
+
+  moduleDataCache[idx] = true;
+
+  const scores = computeScores();
+  const score = scores[trait];
+  const mods = getModuleDefinitions();
+  const mod = mods.sort((a,b)=>(scores[a.trait]||50)-(scores[b.trait]||50))[idx];
+
+  try {
+    const lessonEl = document.getElementById(`lesson-${idx}`);
+    const loadEl = document.getElementById(`ai-load-${idx}`);
+
+    const prompt = buildLessonPrompt(mod, score, scores);
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || "Content unavailable. Please try again.";
+
+    loadEl.style.display = 'none';
+    lessonEl.innerHTML = formatLesson(text);
+
+  } catch(e) {
+    document.getElementById(`ai-load-${idx}`).innerHTML = `<span style="color:var(--accent)">Error loading lesson. Check your connection.</span>`;
+  }
+}
+
+function buildLessonPrompt(mod, traitScore, allScores) {
+  const level = traitScore < 50 ? "low (significant growth area)" : traitScore < 75 ? "moderate (developing)" : "high (already strong)";
+
+  return `You are a creative problem solving instructor building a personalized micro-lesson for a college student. Their score in "${TRAIT_NAMES[mod.trait]}" is ${traitScore}/100 (${level}).
+
+Their full profile:
+- Creativity: ${allScores.creativity}/100
+- Ambiguity Tolerance: ${allScores.ambiguity}/100
+- Risk Acceptance: ${allScores.risk}/100
+- Systems Thinking: ${allScores.systems}/100
+- Observation: ${allScores.observation}/100
+
+Write a personalized lesson on: "${mod.title}" — ${mod.subtitle}
+
+The lesson should:
+1. Start with a direct, honest observation about this person's specific score and what it means
+2. Include one key insight from either "Little Bets" by Peter Sims OR "Designing Your Life" by Burnett & Evans — cite the book by name
+3. Give one concrete, real-world example (can reference Chris Rock, Pixar, Da Vinci, the Wagsters, design thinking, etc.)
+4. Include one immediately actionable exercise the student can do this week — clearly labeled "Try This:"
+5. End with one memorable principle in bold
+
+Format using these HTML tags only: <p>, <h4>, <div class="highlight-box">, <div class="exercise"><div class="exercise-label">Try This</div>...text...</div>
+Keep it focused — 4-6 paragraphs total. Write in second person ("you"). Be direct, not motivational-poster vague.`;
+}
+
+function formatLesson(text) {
+  // Clean up any markdown that might slip through
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  // If it doesn't have HTML tags, wrap in paragraphs
+  if (!text.includes('<p>') && !text.includes('<h4>')) {
+    text = text.split('\n\n').filter(p=>p.trim()).map(p=>`<p>${p}</p>`).join('');
+  }
+  return text;
+}
+
+function getModuleDefinitions() {
+  return [
+    {
+      trait: "creativity",
+      title: "Unlocking Your Creative Engine",
+      subtitle: "How to generate more ideas, more often — and stop filtering too soon"
+    },
+    {
+      trait: "ambiguity",
+      title: "Operating in the Swamp",
+      subtitle: "Building your tolerance for not knowing — and finding the freedom in it"
+    },
+    {
+      trait: "risk",
+      title: "The Little Bet Mindset",
+      subtitle: "How to take smart risks through small experiments instead of big gambles"
+    },
+    {
+      trait: "systems",
+      title: "Seeing the Whole System",
+      subtitle: "Why problems are never isolated — and how to find the real leverage points"
+    },
+    {
+      trait: "observation",
+      title: "The Art of Seeing Clearly",
+      subtitle: "How to observe people and contexts deeply before you design anything"
+    }
+  ];
+}
+</script>
+</body>
+</html>
